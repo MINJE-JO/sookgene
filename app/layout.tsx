@@ -5,10 +5,14 @@ import type { Metadata } from 'next'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SookGene',
-  description: 'SookGene',
-  icons: {
-    icon: '/favicon.ico',
+  title: '숙취 유형 분석 | SookGene - 맞춤형 숙취해소 솔루션',
+  description: '당신의 유전자 기반 맞춤형 숙취 유형을 분석하고, 개인화된 숙취해소 솔루션을 제안받아보세요.',
+  keywords: '숙취해소, 맞춤형 솔루션, 유전자 분석, 숙취 패턴, 건강',
+  openGraph: {
+    title: '숙취 유형 분석 | SookGene',
+    description: '당신만의 맞춤형 숙취해소 솔루션을 찾아보세요',
+    type: 'website',
+    locale: 'ko_KR',
   },
 }
 
@@ -18,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${inter.className} antialiased`}>
         {children}
       </body>
