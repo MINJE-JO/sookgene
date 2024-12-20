@@ -8,20 +8,20 @@ import { calculateResult } from '@/utils/calculator';
 export default function ResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const answers = searchParams.get('answers');
+  const data = searchParams.get('data');
 
   useEffect(() => {
-    if (!answers) {
+    if (!data) {
       router.push('/survey');
     }
-  }, [answers, router]);
+  }, [data, router]);
 
-  if (!answers) {
+  if (!data) {
     return null;
   }
 
-  const parsedAnswers = JSON.parse(decodeURIComponent(answers));
-  const result = calculateResult(parsedAnswers);
+  const { symptoms, answers } = JSON.parse(decodeURIComponent(data));
+  const result = calculateResult(symptoms, answers);
 
   const handleReset = () => {
     router.push('/survey');
