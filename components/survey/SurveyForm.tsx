@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { questions, TOTAL_QUESTIONS } from '@/data/questions';
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 export default function SurveyForm() {
   const router = useRouter();
@@ -52,6 +57,20 @@ export default function SurveyForm() {
   };
 
   const handleNext = () => {
+    const currentQuestionId = questions[currentStep].id;
+    if (!answers[currentQuestionId] || answers[currentQuestionId].length === 0) {
+      alert('질문에 답해주세요.');
+      return;
+    }
+    
+    if (currentStep < questions.length - 1) {
+      const nextQuestionId = questions[currentStep + 1].id;
+      setAnswers(prev => {
+        const { [nextQuestionId]: _, ...rest } = prev;
+        return rest;
+      });
+    }
+    
     setCurrentStep(prev => prev + 1);
   };
 
@@ -62,23 +81,78 @@ export default function SurveyForm() {
   const currentQuestion = questions[currentStep];
   const currentAnswers = answers[currentQuestion.id] || [];
 
+  const renderQuestion = (questionId: string) => {
+    const question = questions.find(q => q.id === questionId);
+    if (!question) return null;
+
+    if (questionId === 'q1') {
+      return (
+        <div className="space-y-4">
+          {question.options.map((option, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <Checkbox
+                id={`${questionId}-${index}`}
+                checked={answers[questionId]?.includes(index)}
+                onCheckedChange={(checked) => {
+                  setAnswers(prev => {
+                    const currentAnswers = prev[questionId] || [];
+                    if (checked) {
+                      return {
+                        ...prev,
+                        [questionId]: [...currentAnswers, index]
+                      };
+                    } else {
+                      return {
+                        ...prev,
+                        [questionId]: currentAnswers.filter(v => v !== index)
+                      };
+                    }
+                  });
+                }}
+              />
+              <Label
+                htmlFor={`${questionId}-${index}`}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {option.text}
+              </Label>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    const currentValue = answers[questionId]?.[0]?.toString() || '';
+    
+    return (
+      <RadioGroup
+        value={currentValue}
+        onValueChange={(value) => {
+          setAnswers(prev => ({
+            ...prev,
+            [questionId]: [parseInt(value)]
+          }));
+        }}
+      >
+        {question.options.map((option, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <RadioGroupItem
+              value={index.toString()}
+              id={`${questionId}-${index}`}
+            />
+            <Label htmlFor={`${questionId}-${index}`}>
+              {option.text}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
       <div className="mb-4">
-        <div className="flex justify-center items-center gap-3 mb-2">
-          {[...Array(TOTAL_QUESTIONS)].map((_, index) => (
-            <div
-              key={index}
-              className={`w-4 h-4 rounded-full transition-colors ${
-                index === currentStep
-                  ? 'bg-[#2C5282]'
-                  : index < currentStep
-                  ? 'bg-[#9DC6FF]'
-                  : 'bg-gray-200'
-              }`}
-            />
-          ))}
-        </div>
+        <Progress value={(currentStep + 1) / TOTAL_QUESTIONS * 100} className="mb-2" />
         <div className="text-sm text-center text-gray-500">
           {currentStep + 1} / {TOTAL_QUESTIONS}
         </div>
@@ -89,48 +163,37 @@ export default function SurveyForm() {
           {currentQuestion.text}
         </h3>
         <div className="space-y-2">
-          {currentQuestion.options.map((option, index) => (
-            <label key={index} className="flex items-center space-x-2">
-              <input
-                type={currentQuestion.multipleChoice ? "checkbox" : "radio"}
-                name={currentQuestion.id}
-                value={index}
-                checked={currentAnswers.includes(index)}
-                onChange={() => handleOptionSelect(currentQuestion.id, index)}
-                className={currentQuestion.multipleChoice ? "form-checkbox" : "form-radio"}
-              />
-              <span>{option.text}</span>
-            </label>
-          ))}
+          {renderQuestion(currentQuestion.id)}
         </div>
       </div>
 
       <div className="mt-6 flex justify-between">
         {currentStep > 0 && (
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={handlePrev}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
           >
             이전
-          </button>
+          </Button>
         )}
         {currentStep < TOTAL_QUESTIONS - 1 && (
-          <button
+          <Button
             type="button"
             onClick={handleNext}
-            className="ml-auto bg-[#2C5282] text-white px-4 py-2 rounded hover:bg-opacity-90"
+            className="ml-auto"
           >
             다음
-          </button>
+          </Button>
         )}
         {currentStep === TOTAL_QUESTIONS - 1 && (
-          <button
+          <Button
             type="submit"
-            className="ml-auto bg-[#FF6B6B] text-white px-4 py-2 rounded hover:bg-opacity-90"
+            variant="destructive"
+            className="ml-auto"
           >
             제출하기
-          </button>
+          </Button>
         )}
       </div>
     </form>

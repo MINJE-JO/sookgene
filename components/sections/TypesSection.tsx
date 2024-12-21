@@ -1,6 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 const types = [
   {
@@ -41,22 +47,22 @@ export default function TypesSection() {
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
           {types.map((type, index) => (
-            <motion.div
-              key={type.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white p-6 rounded-lg shadow-lg"
-            >
-              <h3 className="text-xl font-semibold mb-4 text-[#2C5282]">{type.name}</h3>
-              <ul className="space-y-2">
-                {type.symptoms.map((symptom, idx) => (
-                  <li key={idx} className="text-gray-600 flex items-center">
-                    <span className="w-2 h-2 bg-[#FF6B6B] rounded-full mr-2" />
-                    {symptom}
-                  </li>
-                ))}
-              </ul>
+            <motion.div key={type.name}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl text-[#2C5282]">{type.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {type.symptoms.map((symptom, idx) => (
+                      <li key={idx} className="text-gray-600 flex items-center">
+                        <span className="w-2 h-2 bg-[#FF6B6B] rounded-full mr-2" />
+                        {symptom}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>

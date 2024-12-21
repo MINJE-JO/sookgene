@@ -2,6 +2,7 @@
 
 import type { SurveyResult } from '@/types/survey';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface SurveyResultProps {
   result: SurveyResult;
@@ -24,16 +25,16 @@ export default function SurveyResult({ result, onReset }: SurveyResultProps) {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6">
+      <h2 className="text-2xl font-bold mb-6 text-primary">
         당신의 숙취 유형은 {typeNames[result.type]}입니다.
       </h2>
 
-      <div className="mb-8 bg-blue-50 p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">유형 특징</h3>
+      <div className="mb-8 bg-primary/5 p-6 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-primary">유형 특징</h3>
         <ul className="space-y-2">
           {result.characteristics.map((characteristic, index) => (
             <li key={index} className="flex items-center">
-              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
+              <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
               {characteristic}
             </li>
           ))}
@@ -41,24 +42,24 @@ export default function SurveyResult({ result, onReset }: SurveyResultProps) {
       </div>
       
       <div className="grid md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-gray-50 p-6 rounded-lg h-full">
-          <h3 className="text-xl font-semibold mb-4">기본 성분</h3>
+        <div className="bg-secondary/20 p-6 rounded-lg h-full">
+          <h3 className="text-xl font-semibold mb-4 text-primary">기본 성분</h3>
           <ul className="space-y-2">
             {baseComponents.map((component, index) => (
               <li key={index} className="flex items-center">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
+                <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
                 {component}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="bg-green-50 p-6 rounded-lg h-full">
-          <h3 className="text-xl font-semibold mb-4">맞춤 추천 성분</h3>
+        <div className="bg-primary/5 p-6 rounded-lg h-full">
+          <h3 className="text-xl font-semibold mb-4 text-primary">맞춤 추천 성분</h3>
           <ul className="space-y-2">
             {result.recommendations.map((rec, index) => (
               <li key={index} className="flex items-center">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
+                <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
                 {rec}
               </li>
             ))}
@@ -67,17 +68,20 @@ export default function SurveyResult({ result, onReset }: SurveyResultProps) {
       </div>
 
       <div className="space-y-4">
-        <button
+        <Button
           onClick={onReset}
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          variant="destructive"
+          className="w-full"
         >
           다시 검사하기
-        </button>
-        <Link
-          href="/"
-          className="block w-full text-center bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-        >
-          홈으로 돌아가기
+        </Button>
+        <Link href="/" className="block w-full">
+          <Button
+            variant="secondary"
+            className="w-full"
+          >
+            홈으로 돌아가기
+          </Button>
         </Link>
       </div>
     </div>

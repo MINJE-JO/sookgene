@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { Button } from "@/components/ui/button"
 
 const steps = [
   {
@@ -43,11 +44,14 @@ export default function SolutionSection() {
           ))}
         </div>
         <div className="text-center">
-          <Link
-            href="/survey"
-            className="inline-block bg-[#FF6B6B] text-white px-8 py-4 rounded-lg text-xl hover:bg-opacity-90 transition-all"
-          >
-            지금 바로 분석하기
+          <Link href="/survey">
+            <Button 
+              variant="destructive" 
+              size="lg"
+              className="px-8 py-4 text-xl"
+            >
+              지금 바로 분석하기
+            </Button>
           </Link>
         </div>
       </div>
