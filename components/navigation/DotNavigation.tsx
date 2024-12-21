@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 const sections = ['hero', 'problem', 'types', 'solution', 'product'];
 
-export default function DotNavigation() {
+const useScrollSpy = (sections: string[]) => {
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
@@ -26,6 +26,12 @@ export default function DotNavigation() {
 
     return () => observer.disconnect();
   }, []);
+
+  return activeSection;
+};
+
+export default function DotNavigation() {
+  const activeSection = useScrollSpy(sections);
 
   const handleDotClick = (section: string) => {
     document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });

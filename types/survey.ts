@@ -1,7 +1,5 @@
-export type HangoverType = 
-  | 'IMMEDIATE_REACTION'    // 즉각적 반응형
-  | 'RAPID_INTOXICATION'   // 빠른 취기형
-  | 'DELAYED_DETOX';       // 지연성 해독 장애형
+const HANGOVER_TYPES = ['IMMEDIATE_REACTION', 'RAPID_INTOXICATION', 'DELAYED_DETOX'] as const;
+export type HangoverType = typeof HANGOVER_TYPES[number];
 
 export interface Question {
   id: string;
@@ -34,3 +32,9 @@ export interface Symptom {
     score: number;
   }[];
 }
+
+export const MIN_SCORES: Record<HangoverType, number> = {
+  IMMEDIATE_REACTION: 15,
+  RAPID_INTOXICATION: 12,
+  DELAYED_DETOX: 15
+} as const;

@@ -1,13 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import { questions, TOTAL_QUESTIONS } from '@/data/questions';
+import { Question } from '@/types/survey';
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+
+interface OptionProps {
+  option: Question['options'][number];
+  isSelected: boolean;
+  onSelect: () => void;
+}
+
+const MemoizedOption = memo(({ option, isSelected, onSelect }: OptionProps) => {
+  return (
+    <div 
+      onClick={onSelect}
+      className={`p-4 border rounded-lg cursor-pointer transition-all ${
+        isSelected ? 'bg-primary text-white' : 'hover:bg-gray-50'
+      }`}
+    >
+      {option.text}
+    </div>
+  );
+});
+
+MemoizedOption.displayName = 'MemoizedOption';
 
 export default function SurveyForm() {
   const router = useRouter();
