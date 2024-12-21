@@ -2,51 +2,56 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { questions, symptoms } from '@/data/questions';
+import { questions, TOTAL_QUESTIONS } from '@/data/questions';
 
 export default function SurveyForm() {
   const router = useRouter();
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, number[]>>({});
   const [currentStep, setCurrentStep] = useState(0);
 
-  const handleSymptomToggle = (symptomId: string) => {
-    setSelectedSymptoms(prev => {
-      if (prev.includes(symptomId)) {
-        return prev.filter(id => id !== symptomId);
+  const handleOptionSelect = (questionId: string, optionIndex: number) => {
+    setAnswers(prev => {
+      const currentQuestion = questions.find(q => q.id === questionId)!;
+      
+      if (currentQuestion.multipleChoice) {
+        const currentAnswers = prev[questionId] || [];
+        if (currentAnswers.includes(optionIndex)) {
+          return {
+            ...prev,
+            [questionId]: currentAnswers.filter(idx => idx !== optionIndex)
+          };
+        } else {
+          return {
+            ...prev,
+            [questionId]: [...currentAnswers, optionIndex]
+          };
+        }
       } else {
-        return [...prev, symptomId];
+        return {
+          ...prev,
+          [questionId]: [optionIndex]
+        };
       }
     });
   };
 
-  const handleOptionSelect = (questionId: string, optionIndex: number) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: optionIndex
-    }));
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const encodedData = encodeURIComponent(JSON.stringify({
-      symptoms: selectedSymptoms,
-      answers
-    }));
+    
+    const isAllAnswered = questions.every(question => 
+      answers[question.id] && answers[question.id].length > 0
+    );
+    
+    if (!isAllAnswered) {
+      alert('모든 질문에 답변해 주세요.');
+      return;
+    }
+
+    const encodedData = encodeURIComponent(JSON.stringify({ answers }));
     router.push(`/survey/result?data=${encodedData}`);
   };
 
   const handleNext = () => {
-    if (currentStep === 0 && selectedSymptoms.length === 0) {
-      alert('하나 이상의 증상을 선택해주세요.');
-      return;
-    }
-    
-    if (currentStep > 0 && answers[questions[currentStep - 1].id] === undefined) {
-      alert('답변을 선택해주세요.');
-      return;
-    }
-    
     setCurrentStep(prev => prev + 1);
   };
 
@@ -54,63 +59,51 @@ export default function SurveyForm() {
     setCurrentStep(prev => prev - 1);
   };
 
-  const totalSteps = questions.length + 1; // 증상 선택 + 질문들
+  const currentQuestion = questions[currentStep];
+  const currentAnswers = answers[currentQuestion.id] || [];
 
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
       <div className="mb-4">
-        <div className="text-sm text-gray-500">
-          {currentStep + 1} / {totalSteps}
+        <div className="flex justify-center items-center gap-3 mb-2">
+          {[...Array(TOTAL_QUESTIONS)].map((_, index) => (
+            <div
+              key={index}
+              className={`w-4 h-4 rounded-full transition-colors ${
+                index === currentStep
+                  ? 'bg-blue-500'
+                  : index < currentStep
+                  ? 'bg-blue-300'
+                  : 'bg-gray-200'
+              }`}
+            />
+          ))}
         </div>
-        <div className="w-full bg-gray-200 h-2 rounded-full">
-          <div
-            className="bg-blue-500 h-2 rounded-full transition-all"
-            style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-          />
+        <div className="text-sm text-center text-gray-500">
+          {currentStep + 1} / {TOTAL_QUESTIONS}
         </div>
       </div>
 
-      {currentStep === 0 ? (
-        <div>
-          <h3 className="text-lg font-medium mb-4">
-            술을 마신 후 주로 어떤 증상이 나타나나요? (복수 선택 가능)
-          </h3>
-          <div className="space-y-2">
-            {symptoms.map((symptom) => (
-              <label key={symptom.id} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedSymptoms.includes(symptom.id)}
-                  onChange={() => handleSymptomToggle(symptom.id)}
-                  className="form-checkbox"
-                />
-                <span>{symptom.text}</span>
-              </label>
-            ))}
-          </div>
+      <div>
+        <h3 className="text-lg font-medium mb-4">
+          {currentQuestion.text}
+        </h3>
+        <div className="space-y-2">
+          {currentQuestion.options.map((option, index) => (
+            <label key={index} className="flex items-center space-x-2">
+              <input
+                type={currentQuestion.multipleChoice ? "checkbox" : "radio"}
+                name={currentQuestion.id}
+                value={index}
+                checked={currentAnswers.includes(index)}
+                onChange={() => handleOptionSelect(currentQuestion.id, index)}
+                className={currentQuestion.multipleChoice ? "form-checkbox" : "form-radio"}
+              />
+              <span>{option.text}</span>
+            </label>
+          ))}
         </div>
-      ) : (
-        <div>
-          <h3 className="text-lg font-medium mb-4">
-            {questions[currentStep - 1].text}
-          </h3>
-          <div className="space-y-2">
-            {questions[currentStep - 1].options.map((option, index) => (
-              <label key={index} className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name={questions[currentStep - 1].id}
-                  value={index}
-                  checked={answers[questions[currentStep - 1].id] === index}
-                  onChange={() => handleOptionSelect(questions[currentStep - 1].id, index)}
-                  className="form-radio"
-                />
-                <span>{option.text}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
+      </div>
 
       <div className="mt-6 flex justify-between">
         {currentStep > 0 && (
@@ -122,7 +115,7 @@ export default function SurveyForm() {
             이전
           </button>
         )}
-        {currentStep < questions.length ? (
+        {currentStep < TOTAL_QUESTIONS - 1 && (
           <button
             type="button"
             onClick={handleNext}
@@ -130,12 +123,13 @@ export default function SurveyForm() {
           >
             다음
           </button>
-        ) : (
+        )}
+        {currentStep === TOTAL_QUESTIONS - 1 && (
           <button
             type="submit"
-            className="ml-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="ml-auto bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
-            결과 보기
+            제출하기
           </button>
         )}
       </div>

@@ -1,5 +1,5 @@
-import { Question, HangoverType, Scores, SurveyResult, Symptom } from '@/types/survey';
-import { questions, symptoms } from '@/data/questions';
+import { Question, HangoverType, Scores, SurveyResult } from '@/types/survey';
+import { questions } from '@/data/questions';
 
 function getCharacteristics(type: HangoverType): string[] {
   const characteristics = {
@@ -53,39 +53,8 @@ function getRecommendations(type: HangoverType): string[] {
   return recommendations[type];
 }
 
-function calculateBonusScores(
-  selectedSymptoms: string[],
-  answers: Record<string, number>,
-  scores: Scores
-): void {
-  // 즉각적 반응형 보너스
-  if (
-    selectedSymptoms.includes('flushing') &&
-    selectedSymptoms.includes('nausea')
-  ) {
-    scores.IMMEDIATE_REACTION += 2;
-  }
-
-  // 빠른 취기형 보너스
-  if (
-    selectedSymptoms.includes('headache') &&
-    answers['q3'] === 1 // 몇 시간 후 시작
-  ) {
-    scores.RAPID_INTOXICATION += 2;
-  }
-
-  // 지연성 해독 장애형 보너스
-  if (
-    selectedSymptoms.includes('fatigue') &&
-    selectedSymptoms.includes('swelling')
-  ) {
-    scores.DELAYED_DETOX += 2;
-  }
-}
-
 export function calculateResult(
-  selectedSymptoms: string[],
-  answers: Record<string, number>
+  answers: Record<string, number[]>
 ): SurveyResult {
   const scores: Scores = {
     IMMEDIATE_REACTION: 0,
@@ -93,29 +62,21 @@ export function calculateResult(
     DELAYED_DETOX: 0
   };
 
-  // 증상 점수 계산
-  selectedSymptoms.forEach(symptomId => {
-    const symptom = symptoms.find(s => s.id === symptomId);
-    if (!symptom) return;
-    
-    symptom.scores.forEach(score => {
-      scores[score.type] += score.score;
-    });
-  });
-
-  // 질문 점수 계산
-  Object.entries(answers).forEach(([questionId, optionIndex]) => {
+  // 모든 답변 점수 계산
+  Object.entries(answers).forEach(([questionId, selectedIndices]) => {
     const question = questions.find(q => q.id === questionId);
     if (!question) return;
 
-    const selectedOption = question.options[optionIndex];
-    selectedOption.scores.forEach(score => {
-      scores[score.type] += score.score;
+    selectedIndices.forEach(index => {
+      const selectedOption = question.options[index];
+      selectedOption.scores.forEach(score => {
+        scores[score.type] += score.score;
+      });
     });
   });
 
   // 보너스 점수 계산
-  calculateBonusScores(selectedSymptoms, answers, scores);
+  calculateBonusScores(answers, scores);
 
   // 가장 높은 점수의 유형 찾기
   const [maxType] = Object.entries(scores).reduce((a, b) => 
@@ -131,7 +92,7 @@ export function calculateResult(
 
   const finalType = scores[maxType as HangoverType] >= minScores[maxType as HangoverType]
     ? maxType as HangoverType
-    : 'RAPID_INTOXICATION'; // 기본값
+    : 'RAPID_INTOXICATION';
 
   return {
     type: finalType,
@@ -139,4 +100,32 @@ export function calculateResult(
     characteristics: getCharacteristics(finalType),
     recommendations: getRecommendations(finalType)
   };
+}
+
+function calculateBonusScores(
+  answers: Record<string, number[]>,
+  scores: Scores
+): void {
+  const q1Answers = answers['q1'] || [];
+  const q3Answer = answers['q3']?.[0];
+
+  // 즉각적 반응형 보너스
+  const hasFlushing = q1Answers.includes(0); // '얼굴이 빨개진다'
+  const hasNausea = q1Answers.includes(3);   // '메스꺼움이나 구토가 있다'
+  if (hasFlushing && hasNausea) {
+    scores.IMMEDIATE_REACTION += 2;
+  }
+
+  // 빠른 취기형 보너스
+  const hasHeadache = q1Answers.includes(1); // '두통이 있다'
+  if (hasHeadache && q3Answer === 1) { // '몇 시간 후'
+    scores.RAPID_INTOXICATION += 2;
+  }
+
+  // 지연성 해독 장애형 보너스
+  const hasFatigue = q1Answers.includes(2); // '피로감을 느낀다'
+  const hasSwelling = q1Answers.includes(4); // '부종이 생긴다'
+  if (hasFatigue && hasSwelling) {
+    scores.DELAYED_DETOX += 2;
+  }
 } 

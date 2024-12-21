@@ -13,6 +13,7 @@ export interface Question {
       score: number;
     }[];
   }[];
+  multipleChoice?: boolean;
 }
 
 export interface SurveyResult {

@@ -20,8 +20,8 @@ export default function ResultContent() {
     return null;
   }
 
-  const { symptoms, answers } = JSON.parse(decodeURIComponent(data));
-  const result = calculateResult(symptoms, answers);
+  const { answers } = JSON.parse(decodeURIComponent(data));
+  const result = calculateResult(answers);
 
   const handleReset = () => {
     router.push('/survey');

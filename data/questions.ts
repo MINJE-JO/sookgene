@@ -1,48 +1,48 @@
-import { Question, Symptom } from '@/types/survey';
+import { Question } from '@/types/survey';
 
-// Q1에서 사용할 증상 목록
-export const symptoms: Symptom[] = [
-  {
-    id: 'flushing',
-    text: '얼굴이 빨개진다',
-    scores: [
-      { type: 'IMMEDIATE_REACTION', score: 3 },
-      { type: 'RAPID_INTOXICATION', score: 1 }
-    ]
-  },
-  {
-    id: 'headache',
-    text: '두통이 있다',
-    scores: [
-      { type: 'IMMEDIATE_REACTION', score: 2 },
-      { type: 'RAPID_INTOXICATION', score: 2 },
-      { type: 'DELAYED_DETOX', score: 1 }
-    ]
-  },
-  {
-    id: 'fatigue',
-    text: '피로감을 느낀다',
-    scores: [
-      { type: 'DELAYED_DETOX', score: 3 }
-    ]
-  },
-  {
-    id: 'nausea',
-    text: '메스꺼움이나 구토가 있다',
-    scores: [
-      { type: 'IMMEDIATE_REACTION', score: 3 }
-    ]
-  },
-  {
-    id: 'swelling',
-    text: '부종이 생긴다',
-    scores: [
-      { type: 'DELAYED_DETOX', score: 3 }
-    ]
-  }
-];
+export const TOTAL_QUESTIONS = 5;
 
 export const questions: Question[] = [
+  {
+    id: 'q1',
+    text: '술을 마신 후 주로 어떤 증상이 나타나나요? (복수 선택 가능)',
+    options: [
+      {
+        text: '얼굴이 빨개진다',
+        scores: [
+          { type: 'IMMEDIATE_REACTION', score: 3 },
+          { type: 'RAPID_INTOXICATION', score: 1 }
+        ]
+      },
+      {
+        text: '두통이 있다',
+        scores: [
+          { type: 'IMMEDIATE_REACTION', score: 2 },
+          { type: 'RAPID_INTOXICATION', score: 2 },
+          { type: 'DELAYED_DETOX', score: 1 }
+        ]
+      },
+      {
+        text: '피로감을 느낀다',
+        scores: [
+          { type: 'DELAYED_DETOX', score: 3 }
+        ]
+      },
+      {
+        text: '메스꺼움이나 구토가 있다',
+        scores: [
+          { type: 'IMMEDIATE_REACTION', score: 3 }
+        ]
+      },
+      {
+        text: '부종이 생긴다',
+        scores: [
+          { type: 'DELAYED_DETOX', score: 3 }
+        ]
+      }
+    ],
+    multipleChoice: true
+  },
   {
     id: 'q2',
     text: '숙취 증상이 얼마나 오래 지속되나요?',
