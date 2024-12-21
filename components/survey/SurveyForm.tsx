@@ -71,9 +71,9 @@ export default function SurveyForm() {
               key={index}
               className={`w-4 h-4 rounded-full transition-colors ${
                 index === currentStep
-                  ? 'bg-blue-500'
+                  ? 'bg-[#2C5282]'
                   : index < currentStep
-                  ? 'bg-blue-300'
+                  ? 'bg-[#9DC6FF]'
                   : 'bg-gray-200'
               }`}
             />
@@ -119,7 +119,7 @@ export default function SurveyForm() {
           <button
             type="button"
             onClick={handleNext}
-            className="ml-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="ml-auto bg-[#2C5282] text-white px-4 py-2 rounded hover:bg-opacity-90"
           >
             다음
           </button>
@@ -127,7 +127,7 @@ export default function SurveyForm() {
         {currentStep === TOTAL_QUESTIONS - 1 && (
           <button
             type="submit"
-            className="ml-auto bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            className="ml-auto bg-[#FF6B6B] text-white px-4 py-2 rounded hover:bg-opacity-90"
           >
             제출하기
           </button>
