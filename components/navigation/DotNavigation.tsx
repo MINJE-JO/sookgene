@@ -25,7 +25,7 @@ const useScrollSpy = (sections: string[]) => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
 
   return activeSection;
 };
@@ -38,7 +38,7 @@ export default function DotNavigation() {
   };
 
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col space-y-2">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-row space-x-2">
       {sections.map((section) => (
         <button
           key={section}

@@ -9,7 +9,17 @@ html {
 
 .scroll-section {
   scroll-snap-align: start;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 5rem 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .scroll-section {
+    padding: 6rem 1rem;
+  }
 }
 
 @layer base {
