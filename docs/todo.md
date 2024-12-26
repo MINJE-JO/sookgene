@@ -59,19 +59,30 @@
     for insert with check (auth.uid() = user_id);
   ```
 - [ ] API 키 및 환경변수 설정
+  - [ ] `NEXT_PUBLIC_SUPABASE_URL` 설정
+  - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` 설정
+- [ ] Supabase Auth 설정
+  - [ ] 카카오 OAuth Provider 활성화
+  - [ ] 카카오 Client ID/Secret 등록
+  - [ ] 리다이렉트 URL 설정
+  - [ ] Site URL 설정
 
 ## 3. 인증 기능 구현
-- [ ] 카카오 SDK 설치 및 초기화
+- [ ] Supabase Client 설정
   ```bash
-  npm install @kakao/sdk
+  npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
   ```
 - [ ] 인증 관련 유틸리티 함수 구현
-  - [ ] 카카오 로그인 함수
-  - [ ] Supabase Auth 연동
+  - [ ] Supabase Auth 초기화
+  - [ ] 카카오 로그인 함수 (Supabase signInWithOAuth)
   - [ ] 로그아웃 함수
-  - [ ] 토큰 관리 함수
-- [ ] 로그인 상태 관리 구현
-- [ ] 인증 미들웨어 구현
+  - [ ] 세션 관리 함수
+- [ ] 서버 컴포넌트 미들웨어 구현
+  - [ ] createMiddlewareClient 설정
+  - [ ] 세션 새로고침 처리
+- [ ] 클라이언트 상태 관리
+  - [ ] useSession 훅 구현
+  - [ ] 로그인 상태 컨텍스트 구현
 
 ## 4. 설문 페이지 수정
 - [ ] PrivateRoute 컴포넌트 구현
