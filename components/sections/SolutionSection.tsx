@@ -21,7 +21,7 @@ const steps = [
 
 export default function SolutionSection() {
   return (
-    <section id="solution" className="scroll-section bg-[#2C5282] text-white flex items-center justify-center">
+    <section id="solution" className="scroll-section bg-primary text-white flex items-center justify-center">
       <div className="max-w-4xl mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
           당신의 숙취 패턴을 분석합니다
@@ -35,11 +35,11 @@ export default function SolutionSection() {
               transition={{ duration: 0.5, delay: index * 0.2 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-[#FF6B6B] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+              <div className="w-16 h-16 bg-destructive rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
                 {index + 1}
               </div>
               <h3 className="text-2xl font-semibold mb-4">{step.title}</h3>
-              <p className="text-[#9DC6FF]">{step.description}</p>
+              <p className="text-secondary">{step.description}</p>
             </motion.div>
           ))}
         </div>

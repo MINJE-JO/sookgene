@@ -40,9 +40,9 @@ const types = [
 
 export default function TypesSection() {
   return (
-    <section id="types" className="scroll-section bg-[#9DC6FF] bg-opacity-5 flex items-center justify-center py-16">
+    <section id="types" className="scroll-section bg-secondary/5 flex items-center justify-center py-16">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-[#2C5282]">
+        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-primary">
           숙취 유형 소개
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
@@ -50,13 +50,13 @@ export default function TypesSection() {
             <motion.div key={type.name}>
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-xl text-[#2C5282]">{type.name}</CardTitle>
+                  <CardTitle className="text-xl text-primary">{type.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
                     {type.symptoms.map((symptom, idx) => (
                       <li key={idx} className="text-gray-600 flex items-center">
-                        <span className="w-2 h-2 bg-[#FF6B6B] rounded-full mr-2" />
+                        <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
                         {symptom}
                       </li>
                     ))}

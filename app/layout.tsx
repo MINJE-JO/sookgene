@@ -2,7 +2,11 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import type { Metadata } from 'next'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter'
+})
 
 export const metadata: Metadata = {
   title: '숙취 유형 분석 | SookGene - 맞춤형 숙취해소 솔루션',
@@ -22,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={inter.variable}>
       <body className={`${inter.className} antialiased`}>
         {children}
       </body>

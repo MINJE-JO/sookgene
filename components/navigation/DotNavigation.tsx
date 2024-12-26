@@ -45,8 +45,8 @@ export default function DotNavigation() {
           onClick={() => handleDotClick(section)}
           className={`w-3 h-3 rounded-full transition-all duration-300 ${
             activeSection === section
-              ? 'bg-[#FF6B6B] scale-125'
-              : 'bg-[#9DC6FF] hover:bg-[#2C5282]'
+              ? 'bg-destructive scale-125'
+              : 'bg-secondary hover:bg-primary'
           }`}
           aria-label={`Scroll to ${section} section`}
         />

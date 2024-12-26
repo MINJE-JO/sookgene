@@ -125,9 +125,9 @@
 ## 5. 디자인 시스템
 
 ### 5.1 색상
-- Primary: #2C5282 (Blue)
-- Secondary: #9DC6FF (Light Blue)
-- Accent: #FF6B6B (Red)
+- Primary: #2B2F5F (Navy Blue)
+- Secondary: #56E2CF (Turquoise)
+- Accent: #FF6B82 (Coral Pink)
 - Background: White
 - Text: Gray-600/700
 
