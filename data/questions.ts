@@ -5,7 +5,8 @@ export const TOTAL_QUESTIONS = 5;
 export const questions: Question[] = [
   {
     id: 'q1',
-    text: '술을 마신 후 주로 어떤 증상이 나타나나요? (복수 선택 가능)',
+    text: '음주 후 다음 중 어떤 증상이 나타나나요?',
+    multipleChoice: true,
     options: [
       {
         text: '얼굴이 빨개진다',
@@ -40,8 +41,7 @@ export const questions: Question[] = [
           { type: 'DELAYED_DETOX', score: 3 }
         ]
       }
-    ],
-    multipleChoice: true
+    ]
   },
   {
     id: 'q2',
