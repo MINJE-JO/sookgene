@@ -3,6 +3,8 @@
 import type { SurveyResult } from '@/types/survey';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import KakaoButtons from '@/components/KakaoButtons';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 interface SurveyResultProps {
   result: SurveyResult;
@@ -11,17 +13,33 @@ interface SurveyResultProps {
 
 export default function SurveyResult({ result, onReset }: SurveyResultProps) {
   const typeNames = {
-    IMMEDIATE_REACTION: '즉각적 반응형',
-    RAPID_INTOXICATION: '빠른 취기형',
-    DELAYED_DETOX: '지연성 해독 장애형'
+    IMMEDIATE_REACTION: '불타는 홍조형',
+    RAPID_INTOXICATION: '초고속 취기형',
+    DELAYED_DETOX: '다음날 숙취형'
   };
 
-  const baseComponents = [
-    '비타민 B군 복합체',
-    '전해질 보충제',
-    '기본 항산화제',
-    '타우린 500mg'
-  ];
+  const recommendations = {
+    IMMEDIATE_REACTION: [
+      'NAC (N-Acetylcysteine) 600mg',
+      '글루타치온 200-300mg',
+      'DHM (Dihydromyricetin) 300mg',
+      '비타민C 500mg',
+      '비타민B6 50mg'
+    ],
+    RAPID_INTOXICATION: [
+      '비타민B6 50mg',
+      '마그네슘 300mg',
+      'CoQ10 100mg',
+      '타우린 500mg'
+    ],
+    DELAYED_DETOX: [
+      'BCAA (분지 사슬 아미노산) 5000mg',
+      '오르니틴 400mg',
+      '밀크시슬 추출물 150-200mg',
+      'NAC 300mg',
+      '글루타치온 200-300mg'
+    ]
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-4">
@@ -40,34 +58,32 @@ export default function SurveyResult({ result, onReset }: SurveyResultProps) {
           ))}
         </ul>
       </div>
-      
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-secondary/20 p-6 rounded-lg h-full">
-          <h3 className="text-xl font-semibold mb-4 text-primary">기본 성분</h3>
-          <ul className="space-y-2">
-            {baseComponents.map((component, index) => (
-              <li key={index} className="flex items-center">
-                <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
-                {component}
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        <div className="bg-primary/5 p-6 rounded-lg h-full">
-          <h3 className="text-xl font-semibold mb-4 text-primary">맞춤 추천 성분</h3>
-          <ul className="space-y-2">
-            {result.recommendations.map((rec, index) => (
-              <li key={index} className="flex items-center">
-                <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
-                {rec}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      {/* <div className="mb-8 bg-primary/5 p-6 rounded-lg">
+        <h3 className="text-xl font-semibold mb-4 text-primary">추천 성분</h3>
+        <ul className="space-y-2">
+          {recommendations[result.type].map((recommendation, index) => (
+            <li key={index} className="flex items-center">
+              <span className="w-2 h-2 bg-destructive rounded-full mr-2" />
+              {recommendation}
+            </li>
+          ))}
+        </ul>
+      </div> */}
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-lg">새로운 제품 추천을 받고 싶으신가요?</CardTitle>
+          <CardDescription>
+            카카오톡 채널 추가하고 맞춤형 숙취해소제 정보를 받아보세요!
+            <br />
+            신제품 출시 소식과 특별 할인 혜택도 받아보실 수 있습니다.
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <div className="space-y-4">
+        <KakaoButtons />
         <Button
           onClick={onReset}
           variant="destructive"

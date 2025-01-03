@@ -18,12 +18,9 @@ interface OptionProps {
 
 const MemoizedOption = memo(({ option, isSelected, onSelect }: OptionProps) => {
   return (
-    <div 
-      onClick={onSelect}
-      className={`p-4 border rounded-lg cursor-pointer transition-all ${
-        isSelected ? 'bg-primary text-white' : 'hover:bg-gray-50'
-      }`}
-    >
+    <div onClick={onSelect} className={`p-4 border rounded-lg cursor-pointer transition-all ${
+      isSelected ? 'bg-primary text-white' : 'hover:bg-gray-50'
+    }`}>
       {option.text}
     </div>
   );
@@ -62,42 +59,35 @@ export default function SurveyForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const isAllAnswered = questions.every(question => 
-      answers[question.id] && answers[question.id].length > 0
-    );
-    
-    if (!isAllAnswered) {
-      alert('모든 질문에 답변해 주세요.');
+    if (!isAllAnswered()) {
+      alert('모든 질문에 답변해주세요.');
       return;
     }
-
-    const encodedData = encodeURIComponent(JSON.stringify({ answers }));
-    router.push(`/survey/result?data=${encodedData}`);
+    
+    try {
+      const encodedData = encodeURIComponent(JSON.stringify({ answers }));
+      router.push(`/survey/result?data=${encodedData}`);
+    } catch (error) {
+      console.error('에러:', error);
+      alert('결과 처리 중 오류가 발생했습니다.');
+    }
   };
 
   const handleNext = () => {
-    const currentQuestionId = questions[currentStep].id;
-    if (!answers[currentQuestionId] || answers[currentQuestionId].length === 0) {
-      alert('질문에 답해주세요.');
-      return;
-    }
-    
-    if (currentStep < questions.length - 1) {
-      const nextQuestionId = questions[currentStep + 1].id;
-      setAnswers(prev => {
-        const { [nextQuestionId]: _, ...rest } = prev;
-        return rest;
-      });
-    }
-    
     setCurrentStep(prev => prev + 1);
   };
 
   const handlePrev = () => {
     setCurrentStep(prev => prev - 1);
+  };
+
+  const isAllAnswered = () => {
+    return questions.every(question => 
+      answers[question.id] && answers[question.id].length > 0
+    );
   };
 
   const currentQuestion = questions[currentStep];
@@ -172,52 +162,56 @@ export default function SurveyForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
-      <div className="mb-4">
-        <Progress value={(currentStep + 1) / TOTAL_QUESTIONS * 100} className="mb-2" />
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 min-h-[calc(100vh-4rem)]">
+      <div className="mb-8">
+        <Progress value={(currentStep + 1) / questions.length * 100} className="mb-2" />
         <div className="text-sm text-center text-gray-500">
-          {currentStep + 1} / {TOTAL_QUESTIONS}
+          {currentStep + 1} / {questions.length}
         </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-medium mb-4">
+      <div className="mb-8">
+        <h3 className="text-xl md:text-2xl font-medium mb-6">
           {currentQuestion.text}
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-4">
           {renderQuestion(currentQuestion.id)}
         </div>
       </div>
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-auto flex justify-between gap-4">
         {currentStep > 0 && (
           <Button
             type="button"
             variant="secondary"
             onClick={handlePrev}
+            className="w-28"
           >
             이전
           </Button>
         )}
-        {currentStep < TOTAL_QUESTIONS - 1 && (
+        {currentStep < questions.length - 1 && (
           <Button
             type="button"
             onClick={handleNext}
-            className="ml-auto"
+            className={`w-28 ${currentStep === 0 ? 'ml-auto' : ''}`}
           >
             다음
           </Button>
         )}
-        {currentStep === TOTAL_QUESTIONS - 1 && (
+      </div>
+
+      {isAllAnswered() && (
+        <div className="mt-8 text-center">
           <Button
             type="submit"
             variant="destructive"
-            className="ml-auto"
+            className="w-full max-w-md py-6 text-lg"
           >
-            제출하기
+            결과 보기
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </form>
   );
 } 

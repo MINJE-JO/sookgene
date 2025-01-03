@@ -4,13 +4,10 @@ export type HangoverType = typeof HANGOVER_TYPES[number];
 export interface Question {
   id: string;
   text: string;
-  options: {
+  options: Array<{
     text: string;
-    scores: {
-      type: HangoverType;
-      score: number;
-    }[];
-  }[];
+    value: number;
+  }>;
   multipleChoice?: boolean;
 }
 
@@ -18,7 +15,7 @@ export interface SurveyResult {
   type: HangoverType;
   score: number;
   characteristics: string[];
-  recommendations: string[];
+  recommendations?: string[];
 }
 
 export type Scores = Record<HangoverType, number>;

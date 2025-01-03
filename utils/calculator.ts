@@ -9,11 +9,11 @@ interface HangoverTypeInfo {
 
 const types: Record<HangoverType, HangoverTypeInfo> = {
   IMMEDIATE_REACTION: {
-    name: '즉각적 반응형',
+    name: '불타는 홍조형',
     symptoms: [
-      '얼굴 홍조',
-      '메스꺼움',
-      '빠른 심박수'
+      '술을 마시면 남들보다 얼굴이 빨리 붉어져요',
+      '심장이 빨리 뛰는 것을 자주 느껴요',
+      '술을 마시면 메스꺼움이 빨리 찾아와요'
     ],
     products: [
       'NAC 600mg',
@@ -23,11 +23,11 @@ const types: Record<HangoverType, HangoverTypeInfo> = {
     ]
   },
   RAPID_INTOXICATION: {
-    name: '빠른 취기형',
+    name: '초고속 취기형',
     symptoms: [
-      '두통',
-      '어지러움',
-      '빠른 취기'
+      '술이 들어가면 남들보다 빨리 취기가 올라요',
+      '술을 마시면 두통이 자주 생겨요',
+      '어지러움을 자주 느끼는 편이에요'
     ],
     products: [
       '비타민B6 50mg',
@@ -37,11 +37,11 @@ const types: Record<HangoverType, HangoverTypeInfo> = {
     ]
   },
   DELAYED_DETOX: {
-    name: '지연성 해독 장애형',
+    name: '다음날 숙취형',
     symptoms: [
-      '피로감',
-      '부종',
-      '지속되는 숙취'
+      '다음 날 아침까지 숙취가 지속돼요',
+      '술 마신 다음날 몸이 무겁고 피로해요',
+      '얼굴과 몸이 잘 붓는 편이에요'
     ],
     products: [
       'BCAA 5000mg',
@@ -68,9 +68,11 @@ export function calculateResult(
 
     selectedIndices.forEach(index => {
       const selectedOption = question.options[index];
-      selectedOption.scores.forEach(score => {
-        scores[score.type] += score.score;
-      });
+      if (selectedOption && 'scores' in selectedOption) {
+        (selectedOption.scores as Array<{type: HangoverType; score: number}>).forEach(scoreInfo => {
+          scores[scoreInfo.type] += scoreInfo.score;
+        });
+      }
     });
   });
 
